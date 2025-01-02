@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {afterNextRender, afterRender, Component} from '@angular/core';
 import {LicensePlate} from '../license-plate';
 import {CartService} from '../cart.service';
 import {NgFor, NgIf} from '@angular/common';
@@ -18,6 +18,16 @@ export class CartViewComponent {
 
   constructor(private service: CartService) {
     service.getCartContents().subscribe(data => this.cartContents = data);
+
+    // Runs after every render
+    afterRender(() => {
+      document.title = `Your Cart ${this.cartContents.length} items`;
+    })
+
+    // Runs after first render
+    afterNextRender(() => {
+      document.title = 'Your cart - Empty';
+    })
   }
 
   removeFromCart(plate: LicensePlate): void {
